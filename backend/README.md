@@ -1,31 +1,16 @@
-# Adonis fullstack application
+# BeTalent API Test
 
-This is the fullstack boilerplate for AdonisJs, it comes pre-configured with.
+Uma API RESTful desenvolvida com AdonisJS que permite gerenciar usuários, clientes, produtos e vendas.
 
-1. Bodyparser
-2. Session
-3. Authentication
-4. Web security middleware
-5. CORS
-6. Edge template engine
-7. Lucid ORM
-8. Migrations and seeds
+## 🚀 Requisitos
 
-## Setup
+- Node.js >= 12
+- MySQL >= 5.7
+- NPM ou Yarn
 
-Use the adonis command to install the blueprint
+## 📦 Instalação
 
+1. Clone o repositório:
 ```bash
-adonis new yardstick
-```
-
-or manually clone the repo and then run `npm install`.
-
-
-### Migrations
-
-Run the following command to run startup migrations.
-
-```js
-adonis migration:run
-```
+git clone <repository-url>
+cd backend

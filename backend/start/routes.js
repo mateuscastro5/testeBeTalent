@@ -2,6 +2,11 @@
 
 const Route = use('Route')
 
+// View Routes
+Route.get('/', 'ViewController.home')
+Route.get('/login', 'ViewController.login').middleware(['guest'])
+Route.get('/register', 'ViewController.register').middleware(['guest'])
+
 // Auth routes
 Route.group(() => {
   Route.post('register', 'AuthController.register')
@@ -12,23 +17,20 @@ Route.group(() => {
 // Protected routes
 Route.group(() => {
   // Client routes
-  Route.resource('clients', 'ClientController')
-        .apiOnly()
-        .validator(new Map([
-          [['clients.store'], ['StoreClient']],
-          [['clients.update'], ['UpdateClient']]
-        ]))
+  Route.get('clients', 'ClientController.index')
+  Route.get('clients/:id', 'ClientController.show')
+  Route.post('clients', 'ClientController.store')
+  Route.put('clients/:id', 'ClientController.update')
+  Route.delete('clients/:id', 'ClientController.destroy')
+  Route.get('clients/:id/sales/:year/:month', 'ClientController.salesByMonth')
 
-  // Product routes  
-  Route.resource('products', 'ProductController')
-        .apiOnly()
-        .validator(new Map([
-          [['products.store'], ['StoreProduct']],
-          [['products.update'], ['UpdateProduct']]
-        ]))
+  // Product routes
+  Route.get('products', 'ProductController.index')
+  Route.get('products/:id', 'ProductController.show')
+  Route.post('products', 'ProductController.store')
+  Route.put('products/:id', 'ProductController.update')
+  Route.delete('products/:id', 'ProductController.destroy')
 
   // Sales routes
   Route.post('sales', 'SaleController.store')
-        .validator('StoreSale')
-
 }).prefix('api').middleware('auth')

@@ -1,0 +1,13 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: betalent_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: betalent123
+      MYSQL_DATABASE: betalent
+    ports:
+      - "3306:3306"
+    command: --default-authentication-plugin=mysql_native_password

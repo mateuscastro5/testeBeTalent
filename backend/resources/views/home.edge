@@ -1,0 +1,46 @@
+@layout('layouts/main')
+
+@section('content')
+  <div class="card">
+    <h1>Welcome to BeTalent API Dashboard</h1>
+    <p>This interface demonstrates the main features of our RESTful API:</p>
+    
+    <div class="features">
+      <div class="feature-card">
+        <h3>🔐 Authentication</h3>
+        <ul>
+          <li>User Registration</li>
+          <li>JWT-based Login</li>
+          <li>Protected Routes</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h3>👥 Client Management</h3>
+        <ul>
+          <li>List/Search Clients</li>
+          <li>Client Details with Address</li>
+          <li>Sales History</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h3>📦 Product Management</h3>
+        <ul>
+          <li>Product Catalog</li>
+          <li>Price Management</li>
+          <li>Soft Delete</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h3>💰 Sales Management</h3>
+        <ul>
+          <li>Record Sales</li>
+          <li>Sales History</li>
+          <li>Filter by Date</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+@endsection

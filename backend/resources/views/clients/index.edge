@@ -1,0 +1,51 @@
+<!-- resources/views/clients/index.edge -->
+@layout('layouts/main')
+
+@section('content')
+<div class="content-header">
+  <h2>Clients</h2>
+  <button class="btn btn-primary" onclick="openNewClientModal()">New Client</button>
+</div>
+
+<div class="card">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>CPF</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="clientsTableBody">
+      <!-- Populated via JavaScript -->
+    </tbody>
+  </table>
+</div>
+
+<div id="clientModal" class="modal">
+  <div class="modal-content">
+    <h3>Add Client</h3>
+    <form id="clientForm" onsubmit="handleClientSubmit(event)">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="cpf">CPF</label>
+        <input type="text" id="cpf" name="cpf" required>
+      </div>
+      <h4>Address</h4>
+      <div class="form-group">
+        <label for="street">Street</label>
+        <input type="text" id="street" name="street" required>
+      </div>
+      <div class="form-group">
+        <label for="city">City</label>
+        <input type="text" id="city" name="city" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+  </div>
+</div>
+@endsection

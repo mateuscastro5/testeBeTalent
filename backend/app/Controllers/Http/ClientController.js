@@ -2,6 +2,7 @@
 'use strict'
 
 const Client = use('App/Models/Client')
+const Database = use('Database')
 
 class ClientController {
   async index ({ request, response }) {
@@ -27,12 +28,43 @@ class ClientController {
       sales
     })
   }
+  
+  async salesByMonth ({ params, response }) {
+    const { id, year, month } = params
+    const client = await Client.findOrFail(id)
+    
+    const sales = await client.sales()
+      .whereRaw('YEAR(created_at) = ? AND MONTH(created_at) = ?', [year, month])
+      .with('product')
+      .orderBy('created_at', 'desc')
+      .fetch()
+  
+    return response.json(sales)
+  }
 
   async store ({ request, response }) {
-    const data = request.only(['name', 'cpf'])
-    const client = await Client.create(data)
-    
-    return response.status(201).json(client)
+    const trx = await Database.beginTransaction()
+    try {
+      const { name, cpf, addresses, phones } = request.all()
+      const client = await Client.create({ name, cpf }, trx)
+      
+      if (addresses && addresses.length) {
+        await client.addresses().createMany(addresses, trx)
+      }
+      
+      if (phones && phones.length) {
+        await client.phones().createMany(phones, trx)
+      }
+      
+      await trx.commit()
+      return response.status(201).json(client)
+    } catch (error) {
+      await trx.rollback()
+      return response.status(400).json({
+        status: 'error',
+        message: 'Error creating client: ' + error.message
+      })
+    }
   }
 
   async update ({ params, request, response }) {
