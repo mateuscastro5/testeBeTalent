@@ -1,4 +1,3 @@
-// database/migrations/sales.js
 'use strict'
 
 const Schema = use('Schema')
@@ -20,3 +19,5 @@ class SalesSchema extends Schema {
     this.drop('sales')
   }
 }
+
+module.exports = SalesSchema

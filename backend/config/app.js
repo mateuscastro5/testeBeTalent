@@ -4,7 +4,6 @@
 const Env = use('Env')
 
 module.exports = {
-
   /*
   |--------------------------------------------------------------------------
   | Application Name
@@ -36,35 +35,24 @@ module.exports = {
     |--------------------------------------------------------------------------
     |
     | Method spoofing allows you to make requests by spoofing the http verb.
-    | Which means you can make a GET request but instruct the server to
-    | treat as a POST or PUT request. If you want this feature, set the
-    | below value to true.
+    | This is usually required when you are making traditional form
+    | submissions.
     |
     */
-    allowMethodSpoofing: true,
+    allowMethodSpoofing: false,
 
     /*
     |--------------------------------------------------------------------------
-    | Trust Proxy
+    | Subdomain Offset
     |--------------------------------------------------------------------------
     |
-    | Trust proxy defines whether X-Forwarded-* headers should be trusted or not.
-    | When your application is behind a proxy server like nginx, these values
-    | are set automatically and should be trusted. Apart from setting it
-    | to true or false Adonis supports a handful of ways to allow proxy
-    | values. Read documentation for that.
+    | Offset to be used for recognizing subdomains.
     |
-    */
-    trustProxy: false,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Subdomains
-    |--------------------------------------------------------------------------
+    | For example: If your domain is `foo.bar.baz.com` and you want the subdomain
+    | to be `foo.bar`, then the offset should be 2. Otherwise, the subdomain
+    | will be `foo`.
     |
-    | Offset to be used for returning subdomains for a given request. For
-    | majority of applications it will be 2, until you have nested
-    | sudomains.
+    | @example
     | cheatsheet.adonisjs.com      - offset - 2
     | virk.cheatsheet.adonisjs.com - offset - 3
     |
@@ -81,7 +69,6 @@ module.exports = {
     |
     */
     jsonpCallback: 'callback',
-
 
     /*
     |--------------------------------------------------------------------------
@@ -110,6 +97,9 @@ module.exports = {
     cache: Env.get('CACHE_VIEWS', true)
   },
 
+
+
+  
   static: {
     /*
     |--------------------------------------------------------------------------
@@ -177,50 +167,17 @@ module.exports = {
   },
 
   logger: {
-    /*
-    |--------------------------------------------------------------------------
-    | Transport
-    |--------------------------------------------------------------------------
-    |
-    | Transport to be used for logging messages. You can have multiple
-    | transports using same driver.
-    |
-    | Available drivers are: `file` and `console`.
-    |
-    */
-    transport: 'console',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Console Transport
-    |--------------------------------------------------------------------------
-    |
-    | Using `console` driver for logging. This driver writes to `stdout`
-    | and `stderr`
-    |
-    */
+    transport: 'console', // Mudando para console para debug
     console: {
       driver: 'console',
       name: 'adonis-app',
-      level: 'info'
+      level: 'debug' // Mudando para debug para ver mais informações
     },
-
-    /*
-    |--------------------------------------------------------------------------
-    | File Transport
-    |--------------------------------------------------------------------------
-    |
-    | File transport uses file driver and writes log messages for a given
-    | file inside `tmp` directory for your app.
-    |
-    | For a different directory, set an absolute path for the filename.
-    |
-    */
     file: {
       driver: 'file',
       name: 'adonis-app',
-      filename: 'adonis.log',
-      level: 'info'
+      filename: 'tmp/adonis.log',
+      level: 'debug'
     }
   },
 
@@ -229,11 +186,13 @@ module.exports = {
   | Generic Cookie Options
   |--------------------------------------------------------------------------
   |
-  | The following cookie options are generic settings used by AdonisJs to create
-  | cookies. However, some parts of the application like `sessions` can have
-  | seperate settings for cookies inside `config/session.js`.
+  | The following cookie options are generic settings used by AdonisJs to
+  | create cookies. However, some parts of the application like `sessions`
+  | can have separate settings for cookies inside `config/session.js`.
   |
   */
+
+  
   cookie: {
     httpOnly: true,
     sameSite: false,

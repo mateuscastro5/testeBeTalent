@@ -3,9 +3,13 @@
 const Route = use('Route')
 
 // View Routes
-Route.get('/', 'ViewController.home')
+Route.get('/', 'ViewController.login').middleware(['guest'])
 Route.get('/login', 'ViewController.login').middleware(['guest'])
 Route.get('/register', 'ViewController.register').middleware(['guest'])
+Route.get('/home', 'ViewController.home').middleware(['auth'])
+Route.get('/clients', 'ViewController.clients').middleware(['auth'])
+Route.get('/products', 'ViewController.products').middleware(['auth'])
+Route.get('/sales', 'ViewController.sales').middleware(['auth'])
 
 // Auth routes
 Route.group(() => {

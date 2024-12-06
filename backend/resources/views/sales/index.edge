@@ -1,0 +1,51 @@
+@layout('layouts/main')
+
+@section('content')
+<div class="content-header">
+  <h2>Sales</h2>
+  <button class="btn btn-primary" onclick="openNewSaleModal()">New Sale</button>
+</div>
+
+<div class="card">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Client</th>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Total Price</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="salesTableBody">
+      <!-- Populated via JavaScript -->
+    </tbody>
+  </table>
+</div>
+
+<div id="saleModal" class="modal">
+  <div class="modal-content">
+    <h3>Add Sale</h3>
+    <form id="saleForm" onsubmit="handleSaleSubmit(event)">
+      <div class="form-group">
+        <label for="client_id">Client</label>
+        <select id="client_id" name="client_id" required>
+          <!-- Populated via JavaScript -->
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="product_id">Product</label>
+        <select id="product_id" name="product_id" required>
+          <!-- Populated via JavaScript -->
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="quantity">Quantity</label>
+        <input type="number" id="quantity" name="quantity" min="1" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+  </div>
+</div>
+@endsection

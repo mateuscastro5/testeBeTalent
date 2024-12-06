@@ -1,4 +1,6 @@
 // Product management functions
+
+
 async function loadProducts() {
     const token = localStorage.getItem('token')
     
@@ -26,7 +28,7 @@ async function loadProducts() {
       console.error('Failed to load products:', error)
     }
   }
-  
+    
   async function viewProduct(id) {
     const token = localStorage.getItem('token')
     
@@ -134,4 +136,188 @@ async function loadProducts() {
     } catch (error) {
       console.error('Failed to register sale:', error)
     }
+  }
+
+  async function handleLogin(event) {
+    event.preventDefault()
+    const formData = new FormData(event.target)
+    
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(Object.fromEntries(formData))
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        localStorage.setItem('token', data.data.token)
+        showToast('Login successful!', 'success')
+        console.log('Login successful:', data)
+        window.location.href = '/home'
+      } else {
+        const error = await response.json()
+        showToast(`Login failed: ${error.message}`, 'error')
+        console.error('Login failed:', error)
+      }
+    } catch (error) {
+      showToast('Failed to login. Please try again.', 'error')
+      console.error('Failed to login:', error)
+    }
+  }
+
+  async function handleRegister(event) {
+    event.preventDefault()
+    const formData = new FormData(event.target)
+    const data = Object.fromEntries(formData)
+    
+    console.log('Sending registration data:', data) // Debug
+    
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      
+      if (response.ok) {
+        const result = await response.json()
+        console.log('Registration successful:', result) // Debug
+        localStorage.setItem('token', result.data.token)
+        showToast('Registration successful!', 'success')
+        window.location.href = '/home'
+      } else {
+        const error = await response.json()
+        console.error('Registration failed:', error) // Debug
+        showToast(`Registration failed: ${error.message}`, 'error')
+      }
+    } catch (error) {
+      console.error('Registration error:', error) // Debug
+      showToast('Failed to register. Please try again.', 'error')
+    }
+  }
+
+  async function handleProductSubmit(event) {
+    event.preventDefault()
+    const token = localStorage.getItem('token')
+    const formData = new FormData(event.target)
+    
+    try {
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(Object.fromEntries(formData))
+      })
+      
+      if (response.ok) {
+        event.target.parentElement.parentElement.remove()
+        loadProducts() // Refresh the product list
+      }
+    } catch (error) {
+      console.error('Failed to create product:', error)
+    }
+  }
+
+  async function handleSaleSubmit(event) {
+    event.preventDefault()
+    const token = localStorage.getItem('token')
+    const formData = new FormData(event.target)
+    
+    try {
+      const response = await fetch('/api/sales', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(Object.fromEntries(formData))
+      })
+      
+      if (response.ok) {
+        event.target.parentElement.parentElement.remove()
+        alert('Sale registered successfully!')
+        loadSales() // Refresh the sales list
+      }
+    } catch (error) {
+      console.error('Failed to register sale:', error)
+    }
+  }
+
+
+  async function loadProducts() {
+    const token = localStorage.getItem('token')
+    
+    try {
+      const response = await fetch('/api/products', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      const products = await response.json()
+      
+      const tbody = document.getElementById('productsTableBody')
+      if (tbody) {
+        tbody.innerHTML = products.map(product => `
+          <tr>
+            <td>${product.name}</td>
+            <td>R$ ${product.price}</td>
+            <td>
+              <button onclick="viewProduct(${product.id})" class="btn btn-sm">View</button>
+              <button onclick="editProduct(${product.id})" class="btn btn-sm">Edit</button>
+              <button onclick="deleteProduct(${product.id})" class="btn btn-sm btn-danger">Delete</button>
+            </td>
+          </tr>
+        `).join('')
+      }
+    } catch (error) {
+      console.error('Failed to load products:', error)
+    }
+  }
+
+  async function loadSales() {
+    const token = localStorage.getItem('token')
+    
+    try {
+      const response = await fetch('/api/sales', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      const sales = await response.json()
+      
+      const tbody = document.getElementById('salesTableBody')
+      if (tbody) {
+        tbody.innerHTML = sales.map(sale => `
+          <tr>
+            <td>${sale.id}</td>
+            <td>${sale.client.name}</td>
+            <td>${sale.product.name}</td>
+            <td>${sale.quantity}</td>
+            <td>R$ ${sale.total_price}</td>
+            <td>
+              <button onclick="viewSale(${sale.id})" class="btn btn-sm">View</button>
+              <button onclick="editSale(${sale.id})" class="btn btn-sm">Edit</button>
+              <button onclick="deleteSale(${sale.id})" class="btn btn-sm btn-danger">Delete</button>
+            </td>
+          </tr>
+        `).join('')
+      }
+    } catch (error) {
+      console.error('Failed to load sales:', error)
+    }
+  }
+
+  function showToast(message, type = 'error') {
+    const toast = document.createElement('div')
+    toast.className = `toast ${type}`
+    toast.innerText = message
+  
+    document.body.appendChild(toast)
+  
+    setTimeout(() => {
+      toast.remove()
+    }, 3000)
   }
