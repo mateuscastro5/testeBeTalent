@@ -6,26 +6,35 @@ class AuthController {
   async register({ request, auth, response }) {
     try {
       const userData = request.only(['username', 'email', 'password'])
-      console.log('Registering user with data:', userData)
       
-      const user = await User.create(userData)
-      console.log('User created:', user)
+      // Check if user already exists
+      const existingUser = await User.query()
+        .where('email', userData.email)
+        .orWhere('username', userData.username)
+        .first()
       
-      const token = await auth.generate(user)
-      console.log('Token generated:', token)
+      if (existingUser) {
+        return response.status(400).json({
+          status: 'error',
+          message: 'Username or email already in use'
+        })
+      }
 
-      return response.json({
+      const user = await User.create(userData)
+      const token = await auth.generate(user)
+
+      return response.status(201).json({
         status: 'success',
         data: {
           user: user,
-          token: token
+          token: token.token
         }
       })
     } catch (error) {
-      console.error('Error during registration:', error)
+      console.error('Registration error:', error)
       return response.status(400).json({
         status: 'error',
-        message: 'Error during registration: ' + error.message
+        message: 'Failed to register user. Please try a different username or email.'
       })
     }
   }
@@ -33,16 +42,13 @@ class AuthController {
   async login({ request, auth, response }) {
     try {
       const { email, password } = request.all()
-      console.log('Attempting login with email:', email)
       const token = await auth.attempt(email, password)
-      console.log('Login successful, token:', token)
       
       return response.json({
         status: 'success',
         data: token
       })
     } catch (error) {
-      console.error('Login failed:', error)
       return response.status(401).json({
         status: 'error',
         message: 'Invalid credentials'
