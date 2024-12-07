@@ -17,6 +17,7 @@ async function handleLogin(event) {
     const responseData = await response.json();
     
     if (response.ok) {
+      // Store token in localStorage
       localStorage.setItem('authToken', responseData.data.token);
       window.location.href = '/dashboard';
     } else {

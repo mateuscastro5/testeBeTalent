@@ -16,8 +16,7 @@ module.exports = {
       secret: Env.get('APP_KEY'),
       expiresIn: '2h',
       algorithm: 'HS256',
-      issuer: 'betalent-api',
-      tokenType: 'bearer'
+      issuer: 'betalent-api'
     }
   },
 
