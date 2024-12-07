@@ -74,7 +74,8 @@ module.exports = {
     options: {
       secret: Env.get('APP_KEY'),
       expiresIn: '2h'
-    }
+    },
+    tokenKey: 'token',
   },
 
   /*

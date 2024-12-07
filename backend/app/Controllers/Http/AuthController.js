@@ -41,18 +41,27 @@ class AuthController {
 
   async login({ request, auth, response }) {
     try {
-      const { email, password } = request.all()
-      const token = await auth.attempt(email, password)
+      const { email, password } = request.all();
+      const token = await auth.attempt(email, password);
       
+      // Set token in HTTP-only cookie
+      response.cookie('token', token.token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 7200000
+      });
+  
       return response.json({
         status: 'success',
-        data: token
-      })
+        data: { user: token.user }
+      });
     } catch (error) {
       return response.status(401).json({
         status: 'error',
         message: 'Invalid credentials'
-      })
+      });
     }
   }
 }

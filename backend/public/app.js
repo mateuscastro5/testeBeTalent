@@ -1,5 +1,14 @@
-// Product management functions
-
+(function() {
+  const originalFetch = window.fetch;
+  window.fetch = function(...args) {
+    let [url, config = {}] = args;
+    config = config || {};
+    config.headers = config.headers || {};
+    config.credentials = 'include';
+    
+    return originalFetch(url, config);
+  };
+})();
 
 async function loadProducts() {
     const token = localStorage.getItem('token')
@@ -140,32 +149,34 @@ async function loadProducts() {
 
   async function handleLogin(event) {
     event.preventDefault();
+    
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
-    const csrfToken = document.querySelector('input[name="_csrf"]').value;
     
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-CSRF-Token': csrfToken
+          'Accept': 'application/json'
         },
-        body: JSON.stringify(data)
+        credentials: 'include',
+        body: JSON.stringify(data) // We were missing the body!
       });
       
       const responseData = await response.json();
       
       if (response.ok) {
-        localStorage.setItem('token', responseData.data.token);
+        if (responseData.data.token) {
+          localStorage.setItem('token', responseData.data.token);
+        }
         showToast('Login successful!', 'success');
         
         setTimeout(() => {
           window.location.href = '/home';
         }, 1000);
       } else {
-        showToast(`Login failed: ${responseData.message}`, 'error');
+        showToast(responseData.message || 'Invalid credentials', 'error');
       }
     } catch (error) {
       console.error('Login failed:', error);
@@ -192,22 +203,11 @@ async function loadProducts() {
       const responseData = await response.json();
       
       if (response.ok) {
-        const token = responseData.data.token;
-        // Store token
-        localStorage.setItem('token', token);
-        showToast('Registration successful!', 'success');
+        showToast('Registration successful! Redirecting to login...', 'success');
         
-        // Make authenticated request to /home
-        const homeResponse = await fetch('/home', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Accept': 'application/json'
-          }
-        });
-        
-        if (homeResponse.ok) {
-          window.location.href = '/home';
-        }
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 2000);
       } else {
         showToast(responseData.message || 'Registration failed', 'error');
       }
