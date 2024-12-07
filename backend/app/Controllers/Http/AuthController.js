@@ -3,45 +3,24 @@
 const User = use('App/Models/User')
 
 class AuthController {
-  async login({ request, auth, response, session }) {
+  async login({ request, auth, response }) {
     try {
       const { email, password } = request.all()
-      
-      // Attempt authentication
       const token = await auth.attempt(email, password)
-      
-      // Store user in session
-      const user = await User.findBy('email', email)
-      session.put('user', { email: user.email })
-      
-      // Set JWT token in cookie
-      response.cookie('token', token.token, {
-        httpOnly: true,
-        sameSite: true,
-        path: '/',
-        maxAge: 7200000 // 2 hours
-      })
 
-      if (request.accepts(['json', 'html']) === 'json') {
-        return response.status(200).json({
-          status: 'success',
-          data: { token }
-        })
-      }
-      
-      return response.redirect('/dashboard')
+      return response.status(200).json({
+        status: 'success',
+        data: { 
+          token: token.token,
+          user: { email }
+        }
+      })
     } catch (error) {
       console.error('Login error:', error)
-      session.flash({ error: 'Invalid credentials' })
-      
-      if (request.accepts(['json', 'html']) === 'json') {
-        return response.status(401).json({
-          status: 'error',
-          message: 'Invalid credentials'
-        })
-      }
-      
-      return response.redirect('back')
+      return response.status(401).json({
+        status: 'error',
+        message: 'Invalid credentials'
+      })
     }
   }
 

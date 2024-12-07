@@ -9,18 +9,15 @@ async function handleLogin(event) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('input[name="_csrf"]').value
+        'Accept': 'application/json'
       },
-      credentials: 'include',
       body: JSON.stringify(data)
     });
     
     const responseData = await response.json();
     
     if (response.ok) {
-      const { token } = responseData.data;
-      localStorage.setItem('token', token.token);
+      localStorage.setItem('authToken', responseData.data.token);
       window.location.href = '/dashboard';
     } else {
       showToast(responseData.message || 'Invalid credentials', 'error');
@@ -84,6 +81,18 @@ function clearAllCookies() {
 
 async function handleLogout() {
   clearAllCookies();
-  localStorage.removeItem('token');
+  localStorage.removeItem('authToken');
   window.location.href = '/login';
+}
+
+// Add interceptor for all fetch requests
+function fetchWithAuth(url, options = {}) {
+  const token = localStorage.getItem('authToken');
+  if (token) {
+    options.headers = {
+      ...options.headers,
+      'Authorization': `Bearer ${token}`
+    };
+  }
+  return fetch(url, options);
 }

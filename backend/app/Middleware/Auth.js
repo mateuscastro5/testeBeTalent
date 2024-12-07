@@ -3,26 +3,20 @@
 class Auth {
   async handle({ request, auth, response }, next) {
     try {
-      const token = request.cookie('token') || 
-                    request.header('Authorization')?.replace('Bearer ', '')
-      
-      if (!token) {
+      const authHeader = request.header('Authorization')
+      console.log('Authorization Header:', authHeader)
+      if (!authHeader) {
         throw new Error('No token provided')
       }
 
-      try {
-        await auth.authenticator('jwt').setToken(token)
-        await auth.authenticator('jwt').check()
-        await next()
-      } catch (error) {
-        console.error('JWT validation error:', error.message)
-        response.clearCookie('token')
-        throw error
-      }
-
+      const token = authHeader.replace('Bearer ', '')
+      await auth.authenticator('jwt').setToken(token)
+      await auth.authenticator('jwt').check()
+      console.log('Authenticated User:', auth.user)
+      
+      await next()
     } catch (error) {
       console.error('Auth error:', error.message)
-      response.clearCookie('token')
       
       if (request.accepts(['html', 'json']) === 'json') {
         return response.status(401).json({
