@@ -11,6 +11,7 @@ module.exports = {
   | variety of options to choose from.
   */
   csp: {
+    enabled: false,  // Desabilita CSP completamente
     /*
     |--------------------------------------------------------------------------
     | Directives
@@ -28,6 +29,11 @@ module.exports = {
     |
     */
     directives: {
+      defaultSrc: ['\'self\''],
+      styleSrc: ['\'self\'', '\'unsafe-inline\'', 'fonts.googleapis.com'],
+      fontSrc: ['\'self\'', 'fonts.gstatic.com', 'fonts.googleapis.com'],
+      imgSrc: ['\'self\'', 'data:'],
+      scriptSrc: ['\'self\'', '\'unsafe-inline\'', '\'unsafe-eval\'']
     },
     /*
     |--------------------------------------------------------------------------
@@ -134,12 +140,11 @@ module.exports = {
   csrf: {
     enable: true,
     methods: ['POST', 'PUT', 'DELETE'],
-    filterUris: ['/api/auth/register', '/api/auth/login'],
+    filterUris: [],
     cookieOptions: {
-      httpOnly: false,
-      sameSite: false,
-      path: '/',
-      maxAge: 7200
+      httpOnly: true,
+      sameSite: true,
+      path: '/'
     }
   }
 }

@@ -2,21 +2,20 @@
 
 const Route = use('Route')
 
-// Public routes (no auth required)
+// Public routes
 Route.get('/', 'ViewController.login')
-Route.get('/login', 'ViewController.login')
-Route.get('/register', 'ViewController.register')
+Route.get('/login', 'ViewController.login').as('auth.loginPage')
+Route.get('/register', 'ViewController.register').as('auth.registerPage')
 
-// Auth routes (no auth required)
+// Auth routes
 Route.group(() => {
-  Route.post('register', 'AuthController.register').validator('StoreUser')
-  Route.post('login', 'AuthController.login')
+  Route.post('login', 'AuthController.login').as('auth.login')
+  Route.post('register', 'AuthController.register')
+    .validator('StoreUser')
+    .as('auth.register')
 }).prefix('api/auth')
 
-// Protected routes (auth required)
+// Protected routes
 Route.group(() => {
-  Route.get('/home', 'ViewController.home')
-  Route.get('/clients', 'ViewController.clients')
-  Route.get('/products', 'ViewController.products')
-  Route.get('/sales', 'ViewController.sales')
+  Route.get('/home', 'ViewController.home').as('home')
 }).middleware(['auth'])

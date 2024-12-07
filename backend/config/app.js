@@ -167,16 +167,11 @@ module.exports = {
   },
 
   logger: {
-    transport: 'console', // Mudando para console para debug
-    console: {
-      driver: 'console',
-      name: 'adonis-app',
-      level: 'debug' // Mudando para debug para ver mais informações
-    },
+    transport: 'file',
     file: {
       driver: 'file',
       name: 'adonis-app',
-      filename: 'tmp/adonis.log',
+      filename: 'tmp/auth.log',
       level: 'debug'
     }
   },

@@ -22,4 +22,7 @@ const { Ignitor } = require('@adonisjs/ignitor')
 new Ignitor(require('@adonisjs/fold'))
   .appRoot(__dirname)
   .fireHttpServer()
+  .then(() => {
+    console.log(`Servidor rodando em http://${process.env.HOST}:${process.env.PORT}`)
+  })
   .catch(console.error)

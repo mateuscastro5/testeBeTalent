@@ -1,5 +1,7 @@
 'use strict'
 
+const View = use('View')
+
 class ViewController {
   async home({ view, auth, response }) {
     try {
@@ -10,18 +12,23 @@ class ViewController {
     }
   }
 
-  async login({ view }) {
-    return view.render('auth/login')  // Changed from auth.login to auth/login
+  async login({ view, session }) {
+    return view.render('auth/login', {
+      csrfToken: session.get('csrf-token')
+    })
   }
 
-  async register({ view }) {
-    return view.render('auth/register')  // Changed from auth.register to auth/register
+  async register({ view, session }) {
+    // Pass CSRF token to view
+    return view.render('auth/register', { 
+      csrfToken: session.get('csrf-token')
+    })
   }
 
   async clients({ view, auth, response }) {
     try {
       await auth.check()
-      return view.render('clients/index')  // Changed from clients.index to clients/index
+      return view.render('clients/index')
     } catch (error) {
       return response.redirect('/login')
     }
@@ -30,16 +37,7 @@ class ViewController {
   async products({ view, auth, response }) {
     try {
       await auth.check()
-      return view.render('products/index')  // Changed from products.index to products/index
-    } catch (error) {
-      return response.redirect('/login')
-    }
-  }
-
-  async sales({ view, auth, response }) {
-    try {
-      await auth.check()
-      return view.render('sales/index')  // Changed from sales.index to sales/index
+      return view.render('products/index')
     } catch (error) {
       return response.redirect('/login')
     }
