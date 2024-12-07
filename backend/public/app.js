@@ -1,4 +1,3 @@
-
 async function handleLogin(event) {
   event.preventDefault();
   
@@ -10,21 +9,19 @@ async function handleLogin(event) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('input[name="_csrf"]').value
       },
+      credentials: 'include',
       body: JSON.stringify(data)
     });
     
     const responseData = await response.json();
     
     if (response.ok) {
-      const token = responseData.data.token;
+      const { token } = responseData.data;
       localStorage.setItem('token', token.token);
-      
-      document.cookie = `token=${token.token}; path=/`;
-      
-      showToast('Login successful!', 'success');
-      window.location.href = '/home';
+      window.location.href = '/dashboard';
     } else {
       showToast(responseData.message || 'Invalid credentials', 'error');
     }
@@ -76,4 +73,17 @@ function showToast(message, type = 'error') {
   setTimeout(() => {
     toast.remove();
   }, 3000);
+}
+
+function clearAllCookies() {
+  document.cookie.split(';').forEach(cookie => {
+    const name = cookie.split('=')[0].trim();
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+  });
+}
+
+async function handleLogout() {
+  clearAllCookies();
+  localStorage.removeItem('token');
+  window.location.href = '/login';
 }

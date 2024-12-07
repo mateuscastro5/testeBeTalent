@@ -5,23 +5,23 @@ const Env = use('Env')
 
 module.exports = {
   /*
-  |--------------------------------------------------------------------------
+  |-------------------------------------------------------------------------- 
   | Authenticator
-  |--------------------------------------------------------------------------
-  |
-  | Change the authenticator from 'session' to 'jwt'
-  |
+  |-------------------------------------------------------------------------- 
+  | 
+  | Change the authenticator from 'session' to 'jwt' 
+  | 
   */
   authenticator: 'jwt',
 
   /*
-  |--------------------------------------------------------------------------
+  |-------------------------------------------------------------------------- 
   | Session
-  |--------------------------------------------------------------------------
-  |
-  | Session authenticator makes use of sessions to authenticate a user.
-  | Session authentication is always persistent.
-  |
+  |-------------------------------------------------------------------------- 
+  | 
+  | Session authenticator makes use of sessions to authenticate a user. 
+  | Session authentication is always persistent. 
+  | 
   */
   session: {
     serializer: 'lucid',
@@ -32,17 +32,17 @@ module.exports = {
   },
 
   /*
-  |--------------------------------------------------------------------------
+  |-------------------------------------------------------------------------- 
   | Basic Auth
-  |--------------------------------------------------------------------------
-  |
-  | The basic auth authenticator uses basic auth header to authenticate a
-  | user.
-  |
-  | NOTE:
-  | This scheme is not persistent and users are supposed to pass
-  | login credentials on each request.
-  |
+  |-------------------------------------------------------------------------- 
+  | 
+  | The basic auth authenticator uses basic auth header to authenticate a 
+  | user. 
+  | 
+  | NOTE: 
+  | This scheme is not persistent and users are supposed to pass 
+  | login credentials on each request. 
+  | 
   */
   basic: {
     serializer: 'lucid',
@@ -53,12 +53,12 @@ module.exports = {
   },
 
   /*
-  |--------------------------------------------------------------------------
+  |-------------------------------------------------------------------------- 
   | Jwt
-  |--------------------------------------------------------------------------
-  |
-  | Configure JWT authentication
-  |
+  |-------------------------------------------------------------------------- 
+  | 
+  | Configure JWT authentication 
+  | 
   */
   jwt: {
     serializer: 'lucid',
@@ -68,18 +68,19 @@ module.exports = {
     password: 'password',
     options: {
       secret: Env.get('APP_KEY'),
-      // Add expiration time
-      expiresIn: '2h'
+      expiresIn: '2h',
+      algorithm: 'HS256',
+      issuer: 'betalent-api'
     }
   },
 
   /*
-  |--------------------------------------------------------------------------
+  |-------------------------------------------------------------------------- 
   | Api
-  |--------------------------------------------------------------------------
-  |
-  | The Api scheme makes use of API personal tokens to authenticate a user.
-  |
+  |-------------------------------------------------------------------------- 
+  | 
+  | The Api scheme makes use of API personal tokens to authenticate a user. 
+  | 
   */
   api: {
     serializer: 'lucid',

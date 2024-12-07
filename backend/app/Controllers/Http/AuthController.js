@@ -3,21 +3,45 @@
 const User = use('App/Models/User')
 
 class AuthController {
-  async login({ request, auth, response }) {
+  async login({ request, auth, response, session }) {
     try {
       const { email, password } = request.all()
-      // Use JWT authentication instead of session
+      
+      // Attempt authentication
       const token = await auth.attempt(email, password)
       
-      return response.json({
-        status: 'success',
-        data: { token }
+      // Store user in session
+      const user = await User.findBy('email', email)
+      session.put('user', { email: user.email })
+      
+      // Set JWT token in cookie
+      response.cookie('token', token.token, {
+        httpOnly: true,
+        sameSite: true,
+        path: '/',
+        maxAge: 7200000 // 2 hours
       })
+
+      if (request.accepts(['json', 'html']) === 'json') {
+        return response.status(200).json({
+          status: 'success',
+          data: { token }
+        })
+      }
+      
+      return response.redirect('/dashboard')
     } catch (error) {
-      return response.status(401).json({
-        status: 'error',
-        message: 'Invalid credentials'
-      })
+      console.error('Login error:', error)
+      session.flash({ error: 'Invalid credentials' })
+      
+      if (request.accepts(['json', 'html']) === 'json') {
+        return response.status(401).json({
+          status: 'error',
+          message: 'Invalid credentials'
+        })
+      }
+      
+      return response.redirect('back')
     }
   }
 
@@ -41,6 +65,19 @@ class AuthController {
         })
       }
       return response.redirect('back')
+    }
+  }
+
+  async logout({ response, auth }) {
+    try {
+      await auth.logout();
+      response.clearCookie('token');
+      response.clearCookie('XSRF-TOKEN');
+      response.clearCookie('adonis-session');
+      response.clearCookie('adonis-session-values');
+      return response.redirect('/login');
+    } catch (error) {
+      return response.redirect('/login');
     }
   }
 }
