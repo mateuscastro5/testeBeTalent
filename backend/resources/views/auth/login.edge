@@ -5,7 +5,7 @@
   <div class="auth-card">
     <h2>Login</h2>
     <form action="{{ route('auth.login') }}" method="POST">
-      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      {{ csrfField() }}
       
       @if(flashMessage('error'))
         <div class="alert alert-error">
@@ -19,6 +19,7 @@
           type="email" 
           id="email" 
           name="email" 
+          autocomplete="username"
           required
         >
       </div>
@@ -28,12 +29,13 @@
           type="password" 
           id="password" 
           name="password" 
+          autocomplete="current-password"
           required
         >
       </div>
       <button type="submit" class="btn btn-primary">Login</button>
     </form>
-    <p>Don't have an account? <a href="{{ route('auth.register') }}">Register</a></p>
+    <p>Não tem uma conta? <a href="{{ route('auth.registerPage') }}">Register</a></p>
   </div>
 </div>
 @endsection

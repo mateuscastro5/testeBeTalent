@@ -26,8 +26,20 @@ class AuthController {
       const userData = request.only(['username', 'email', 'password'])
       await User.create(userData)
       
+      if (request.accepts('json')) {
+        return response.json({
+          status: 'success',
+          message: 'Registration successful'
+        })
+      }
       return response.redirect('/login')
     } catch (error) {
+      if (request.accepts('json')) {
+        return response.status(400).json({
+          status: 'error',
+          message: error.message
+        })
+      }
       return response.redirect('back')
     }
   }

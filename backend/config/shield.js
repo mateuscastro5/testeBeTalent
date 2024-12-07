@@ -11,7 +11,7 @@ module.exports = {
   | variety of options to choose from.
   */
   csp: {
-    enabled: false,  // Desabilita CSP completamente
+    enabled: true,
     /*
     |--------------------------------------------------------------------------
     | Directives
@@ -29,11 +29,14 @@ module.exports = {
     |
     */
     directives: {
-      defaultSrc: ['\'self\''],
-      styleSrc: ['\'self\'', '\'unsafe-inline\'', 'fonts.googleapis.com'],
-      fontSrc: ['\'self\'', 'fonts.gstatic.com', 'fonts.googleapis.com'],
-      imgSrc: ['\'self\'', 'data:'],
-      scriptSrc: ['\'self\'', '\'unsafe-inline\'', '\'unsafe-eval\'']
+      defaultSrc: ['self'], // Remove aspas extras
+      styleSrc: ['self', 'unsafe-inline', '*'], // Remove aspas extras
+      fontSrc: ['self', 'data:', 'fonts.gstatic.com', 'fonts.googleapis.com'], 
+      imgSrc: ['self', 'data:', '*'],
+      scriptSrc: ['self', 'unsafe-inline', 'unsafe-eval', '*'],
+      connectSrc: ['self', '*'],
+      formAction: ['self'], // Importante para permitir submissão de formulários
+      frameAncestors: ['none']
     },
     /*
     |--------------------------------------------------------------------------

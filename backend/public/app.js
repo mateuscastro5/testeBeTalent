@@ -18,6 +18,11 @@ async function handleLogin(event) {
     const responseData = await response.json();
     
     if (response.ok) {
+      const token = responseData.data.token;
+      localStorage.setItem('token', token.token);
+      
+      document.cookie = `token=${token.token}; path=/`;
+      
       showToast('Login successful!', 'success');
       window.location.href = '/home';
     } else {

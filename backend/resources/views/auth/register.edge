@@ -4,7 +4,8 @@
 <div class="auth-container">
   <div class="auth-card">
     <h2>Register</h2>
-    <form id="registerForm" onsubmit="handleRegister(event)">
+    <form action="{{ route('auth.register') }}" method="POST">
+      {{ csrfField() }}
       <div class="form-group">
         <label for="username">Username</label>
         <input 
@@ -37,7 +38,7 @@
       </div>
       <button type="submit" class="btn btn-primary">Register</button>
     </form>
-    <p>Already have an account? <a href="/login">Login</a></p>
+    <p>Already have an account? <a href="{{ route('auth.loginPage') }}">Login</a></p>
   </div>
 </div>
 
